@@ -1,0 +1,146 @@
+---
+#Take off all gear except LIs and report the values for the following stats
+#Can convert OGH% to rating using https://lotro.hoddevik1.com/ or just add up OGH stats on items +TMastery in char panel
+#Remember to remove class items, offhands, and virtues. Stats from traits (class+racial) should stay
+#If store or other tomes are active, subtract their value from your stats
+char_stats:
+  - Finesse: 113892
+  - Critical Rating: 292916
+  - Physical Mastery: 548354
+  - Tactical Mastery: 163970
+  - Outgoing Healing Rating: 163970 
+  - Incoming Healing Rating: 219600
+  - Physical Mitigation: 0
+  - Tactical Mitigation: 341407
+  - Block Rating: 0
+  - Parry Rating: 116829
+  - Evade Rating: 240883
+  - Resistance Rating: 66626
+  - Critical Defense: 0
+  - Maximum Morale: 364143
+char_class: Brawler
+use_stats:
+  - Finesse: True
+  - Critical Rating: True
+  - Physical Mastery: True
+  - Tactical Mastery: True
+  - Outgoing Healing Rating: True 
+  - Incoming Healing Rating: True
+  - Physical Mitigation: True
+  - Tactical Mitigation: True
+  - Block Rating: True
+  - Parry Rating: True
+  - Evade Rating: True
+  - Resistance Rating: True
+  - Critical Defense: True
+  - Maximum Morale: True
+
+#Add in names and ilvls for items in each slot (can do multiple in each). Use 'None' where non-applicable
+helmet:
+  - Helm of the Hiddenhoard Maelstrom: 474
+  - Helm of the Hiddenhoard Fundament: 474
+shoulders:
+  - Pauldrons of the Hiddenhoard Maelstrom: 474
+  - Pauldrons of the Hiddenhoard Fundament: 474
+cloak:
+  - Cloak of the Hiddenhoard Maelstrom: 475
+  - Cloak of the Hiddenhoard Fundament: 475
+chest:
+  - Chestplate of the Hiddenhoard Maelstrom: 472
+  - Chestplate of the Hiddenhoard Fundament: 472
+gloves:
+  - Gauntlets of the Hiddenhoard Maelstrom: 474
+  - Gauntlets of the Hiddenhoard Fundament: 474
+pants:
+  - Greaves of the Hiddenhoard Maelstrom: 472
+  - Greaves of the Hiddenhoard Fundament: 472
+boots:
+  - Sabatons of the Hiddenhoard Maelstrom: 470
+  - Sabatons of the Hiddenhoard Fundament: 470
+class_item:
+  - Gundabad Belt Buckle of Aggression: 455
+bow: 
+  - None
+offhand: 
+  - None
+shield: 
+  - None
+earring: 
+  - Hiddenhoard Stylish Loop: 475
+necklace:
+  - Cracked Silver Grave Pendant: 480
+bracelet:
+  - Austere Iron Grave Band: 481
+  - Ornate Iron Grave Band: 481
+  - Twisting Nickel Grave Band: 481
+  - Twisting Silver Grave Band: 481
+  - Ornate Nickel Grave Band: 481
+  - Ornate Silver Grave Band: 481
+ring:
+  - Hiddenhoard Hardened Ring: 474
+  - Hiddenhoard Crystal Ring: 474
+pocket:
+  - Lash Fragment Reforged: 469
+  - Jewelled Bell Reforged: 469
+
+#Add in virtues (don't supply ilvl, currently only assumes max ilvl). Ideally at least 5
+virtues:
+  - Compassion
+  - Confidence
+  - Fidelity
+  - Honour
+  - Innocence
+  - Loyalty
+  - Tolerance
+  - Valour
+  - Wit
+  - Zeal
+
+#To enforce 4-sets and/or 3-set on armour, supply the last word of the armour set name (currently not set up for double 3-set, or a 2-set)
+enforce_4set: Maelstrom
+enforce_3set: Fundament
+
+#Give soft- and hard-caps for each stat
+#Essence value set to scale linearly from 1 -> 0 at soft -> hard caps. More scaling options could be implemented
+Finesse: 
+  - soft: 300000
+  - hard: 300000
+Critical Rating: 
+  - soft: 1194275
+  - hard: 1250000
+Physical Mastery: 
+  - soft: 1625787
+  - hard: 1625787
+Tactical Mastery: 
+  - soft: 0
+  - hard: 0
+Outgoing Healing Rating: 
+  - soft: 0
+  - hard: 0
+Incoming Healing Rating: 
+  - soft: 0
+  - hard: 1000000
+Physical Mitigation: 
+  - soft: 1000000
+  - hard: 1625900
+Tactical Mitigation: 
+  - soft: 1331406
+  - hard: 1331406
+Block Rating: 
+  - soft: 0
+  - hard: 0
+Parry Rating: 
+  - soft: 0
+  - hard: 1000000
+Evade Rating: 
+  - soft: 0
+  - hard: 1000000
+Resistance Rating: 
+  - soft: 0
+  - hard: 1000000
+Critical Defense: 
+  - soft: 0
+  - hard: 1000000
+Maximum Morale: 
+  - soft: 1500000
+  - hard: 3000000

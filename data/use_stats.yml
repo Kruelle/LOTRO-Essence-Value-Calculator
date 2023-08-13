@@ -1,0 +1,16 @@
+#Toggle each stat on or off for essence value calculation with `True` or `False`
+use_stats:
+  - Finesse: True
+  - Critical Rating: True
+  - Physical Mastery: True
+  - Tactical Mastery: True
+  - Outgoing Healing Rating: True 
+  - Incoming Healing Rating: True
+  - Physical Mitigation: True
+  - Tactical Mitigation: True
+  - Block Rating: True
+  - Parry Rating: True
+  - Evade Rating: True
+  - Resistance Rating: True
+  - Critical Defense: True
+  - Maximum Morale: True
