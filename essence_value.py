@@ -197,10 +197,10 @@ if __name__ == "__main__":
     parser.add_argument('--name', '-n', type=str, help='Item name', required=True)
     parser.add_argument('--ilvl', '-i', type=int, help='Item level', required=True)
     parser.add_argument('--pclass', '-c', type=str, help='Player class', required=True)
-    parser.add_argument('--use_stats_fp', '-u', type=str, help="File path to use_stats.yml (default: 'use_stats.yml')", required=False, default='use_stats.yml')
-    parser.add_argument('--items_fp', type=str, help="File path to xml of items db (from LC) (default: 'lotro_items_u34_3.xml')",
-                        required=False, default='lotro_items_u34_3.xml')
-    parser.add_argument('--stat_curves_fp', type=str, help="File path to xml of stat curves db (from LC) (default: 'stat_progressions.xml')",
-                        required=False, default='stat_progressions.xml')
+    parser.add_argument('--use_stats_fp', '-u', type=str, help="File path to use_stats.yml (default: 'data/use_stats.yml')", required=False, default='data/use_stats.yml')
+    parser.add_argument('--items_fp', type=str, help="File path to xml of items db (from LC) (default: 'data/items.xml')",
+                        required=False, default='data/.xml')
+    parser.add_argument('--stat_curves_fp', type=str, help="File path to xml of stat curves db (from LC) (default: 'data/progressions.xml')",
+                        required=False, default='data/progressions.xml')
     args = parser.parse_args()
     main(args)
