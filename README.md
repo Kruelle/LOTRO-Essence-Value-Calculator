@@ -11,7 +11,11 @@ The data will also be re-saved to a .csv after being parsed and trimmed so that 
 
 # CLI
 There is also CLI usage for each (most) of the .py files. I didn't add an update data function here so either use the GUI function for that or do it manually.
+
 To get an item's stats at a specified item level, run `Python query_item.py -n <item name> -i <item level>`
+
 To get an item's derived stats at a specified item level for a specified class, run `Python query_item.py -n <item name> -i <item level> -r -c <class>`
+
 To get an item's essence value, run `Python essence_value.py -n <item name> -i <item level> -c <class>`
+
 Note that <item name> should be surrounded by quotes if more than one word, ilvl needs to be [0,550] (for now, will increase range if needed), and file paths can be specified if they're not in the default locations using `--items_fp` and `--stat_curves_fp` (defaults are "data/items.xml" and "data/progressions.xml")
