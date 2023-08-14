@@ -27,7 +27,7 @@ class App(ctk.CTk):
         super().__init__()
         self.geometry("1200x965")
         self.title("LOTRO Essence Value Calculator")
-        self.iconbitmap('images/calculator.ico')
+        self.iconbitmap('images/ev_icon.ico')
         self.items_df = items_df
         self.stat_curves_df = stat_curves_df
         
