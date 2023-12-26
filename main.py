@@ -1,3 +1,4 @@
+import polars as pl
 import pandas as pd
 import tkinter as tk
 import customtkinter as ctk
@@ -11,16 +12,16 @@ from item_parsing import parse_items_xml, clean_items_df
 from query_item import query_item, stats_to_ratings
 from essence_value import get_essence_value, ESSENCES
 
-classes = ['Brawler', 'Beorning', 'Burglar', 'Captain', 'Champion', 'Guardian', 'Hunter', 'Lore-master', 'Minstrel', 'Rune-keeper', 'Warden']
+classes = ['Brawler', 'Beorning', 'Burglar', 'Captain', 'Champion', 'Guardian', 'Hunter', 'Lore-master', 'Mariner', 'Minstrel', 'Rune-keeper', 'Warden']
 stats_list = ['Armour','Vitality','Might','Agility','Will','Fate','Finesse','Critical Rating',
               'Outgoing Healing Rating','Incoming Healing Rating','Tactical Mastery','Physical Mastery',
               'Tactical Mitigation','Physical Mitigation','Evade Rating','Parry Rating','Block Rating',
-              'Critical Defense','Resistance Rating','Maximum Morale']
-ratings_list = ['Maximum Morale','Finesse','Critical Rating',
+              'Critical Defense','Resistance Rating','Maximum Morale', 'Maximum Power', 'In Combat Power Regen',]
+ratings_list = ['Maximum Morale', 'Maximum Power', 'In Combat Power Regen', 'Finesse','Critical Rating',
                 'Outgoing Healing Rating','Incoming Healing Rating','Tactical Mastery','Physical Mastery',
                 'Tactical Mitigation','Physical Mitigation','Evade Rating','Parry Rating','Block Rating',
                 'Critical Defense','Resistance Rating']
-essences = ["Vivid Delver's Essences", "Lively Delver's Essences", "Delver's Essences", "Ruthless Essences",]
+essences = ["Humble Sea-farer's Essences", "Flickering Sea-farer's Essences",]
 
 class App(ctk.CTk):
     def __init__(self, items_df, stat_curves_df, use_stats):
@@ -376,18 +377,24 @@ class SidebarFrame(ctk.CTkFrame):
                                   
     def download_event(self):
         #Delete existing xml/csv files if they exist
+        #del self.master.items_df, self.master.stat_curves_df
+        from pyarrow import fs
+        local = fs.LocalFileSystem()
+        
         items_fp = 'data/items.xml'
         if os.path.exists(items_fp):
             os.remove(items_fp)
         curves_fp = 'data/progressions.xml'
         if os.path.exists(curves_fp):
             os.remove(curves_fp)
-        items_csv_fp = 'data/items.csv'
-        if os.path.exists(items_csv_fp):
-            os.remove(items_csv_fp)
-        curves_csv_fp = 'data/progressions.csv'
-        if os.path.exists(curves_csv_fp):
-            os.remove(curves_csv_fp)
+        items_arrow_fp = 'data/items.arrow'
+        if os.path.exists(items_arrow_fp):
+            #os.chmod(items_arrow_fp, 0o77)
+            local.delete_file(items_arrow_fp)
+        curves_arrow_fp = 'data/progressions.arrow'
+        if os.path.exists(curves_arrow_fp):
+            #os.chmod(curves_arrow_fp, 0o77)
+            local.delete_file(curves_arrow_fp)
         
         #Download items DB
         items_url = "https://raw.githubusercontent.com/LotroCompanion/lotro-items-db/master/items.xml"
@@ -411,11 +418,11 @@ class SidebarFrame(ctk.CTkFrame):
         print("Finished downloading updated data")
         
         #re-parse xmls
-        items_df = parse_items_xml(fp='data/items.xml')
+        items_df = parse_items_xml(fp=items_fp)
         items_df = clean_items_df(items_df)
-        items_df.to_csv('data/items.csv') #save to csv for faster loading
-        stat_curves_df = parse_curves(fp='data/progressions.xml')
-        stat_curves_df.to_csv('data/progressions.csv') #save to csv for faster loading
+        items_df.write_ipc(items_arrow_fp) #save to csv for faster loading
+        stat_curves_df = parse_curves(fp=curves_fp)
+        stat_curves_df.write_ipc(curves_arrow_fp) #save to csv for faster loading
         #save new df's to master class
         self.master.items_df = items_df
         self.master.stat_curves_df = stat_curves_df
@@ -503,25 +510,25 @@ if __name__ == "__main__":
     ctk.set_appearance_mode("dark") #Light/dark
     ctk.set_default_color_theme("blue") #Default color
     
-    #Use pandas to read/write parsed xml files to csv to speed up app loading
+    #Use polars to read/write parsed xml files to arrow ipc to speed up app loading
     #Should drop load times from ~3.5s -> ~0.5s (based on my pc)
-    if os.path.exists('data/items.csv'): #Read from .csv if possible
-        items_df = pd.read_csv('data/items.csv')
+    if os.path.exists('data/items.arrow'): #Read from .arrow if possible
+        items_df = pl.read_ipc('data/items.arrow', memory_map=False)
     else:
         #Get DF of items
         items_df = parse_items_xml(fp='data/items.xml')
         items_df = clean_items_df(items_df)
-        #Save parsed xml file to csv
-        items_df.to_csv('data/items.csv')
+        #Save parsed xml file to arrow ipc
+        items_df.write_ipc('data/items.arrow')
     
-    #Use pandas to read/write parsed xml files to csv to speed up app loading
-    if os.path.exists('data/progressions.csv'): #Read from .csv if possible
-        stat_curves_df = pd.read_csv('data/progressions.csv', index_col=0)
-    else: #Otherwise parse from xml and save to csv
+    #Use pandas to read/write parsed xml files to arrow ipc to speed up app loading
+    if os.path.exists('data/progressions.arrow'): #Read from .arrow if possible
+        stat_curves_df = pl.read_ipc('data/progressions.arrow', memory_map=False)
+    else: #Otherwise parse from xml and save to .arrow
         #Get DF of stat curves
         stat_curves_df = parse_curves(fp='data/progressions.xml')
-        #Save parsed xml file to csv
-        stat_curves_df.to_csv('data/progressions.csv')
+        #Save parsed xml file to arrow ipc
+        stat_curves_df.write_ipc('data/progressions.arrow')
     
     
     #Get the list of stats to use in EV calculations

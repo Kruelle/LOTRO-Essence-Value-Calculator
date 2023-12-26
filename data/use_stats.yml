@@ -14,3 +14,5 @@ use_stats:
   - Resistance Rating: True
   - Critical Defense: True
   - Maximum Morale: True
+  - Maximum Power: True
+  - In Combat Power Regen: False #Don't have EV for this yet

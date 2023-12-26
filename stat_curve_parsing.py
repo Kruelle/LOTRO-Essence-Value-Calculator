@@ -1,6 +1,6 @@
 import os
 import xml.etree.ElementTree as ETree
-import pandas as pd
+import polars as pl
 import numpy as np
 import argparse
 
@@ -8,7 +8,7 @@ import argparse
 #Download from https://raw.githubusercontent.com/LotroCompanion/lotro-data/master/common/progressions.xml
 curves_xml_fp = '/Users/brand/Desktop/Lotro Items Python Sandbox/stat_progressions.xml'
 
-def parse_curves(fp = curves_xml_fp, ilvl_cutoff=549):
+def parse_curves(fp = curves_xml_fp, ilvl_cutoff=599):
     #Parse with ETree, then convert to pandas dataframe
     
     #Read file, get root
@@ -38,10 +38,12 @@ def parse_curves(fp = curves_xml_fp, ilvl_cutoff=549):
 
             if x is not None:
                 idx = int(x)-1
-                ys[idx] = y
+                if idx < ilvl_cutoff:
+                    ys[idx] = y
             else:
                 for idx in range(int(xmin)-1, int(xmax)):
-                    ys[idx] = y
+                    if idx < ilvl_cutoff:
+                        ys[idx] = y
 
         stat_curves.append(ys)
 
@@ -96,11 +98,13 @@ def parse_curves(fp = curves_xml_fp, ilvl_cutoff=549):
         stat_curves.append(ys_full)
 
     #Convert data to dataframe
-    statsDf = pd.DataFrame(np.array(stat_curves).transpose(), columns=stat_curve_idxs)
+    stat_curves = np.array(stat_curves).transpose().astype(float)
+    statsDf = pl.from_numpy(stat_curves, schema=stat_curve_idxs)
     
     #Index is 0->548, let's fix that to be 1->549 to match associated levels
     #Don't run this cell more than once or you'll end up making the index 2->550 etc
-    statsDf.index+=1
+    #EstatsDf.index+=1
+    statsDf = statsDf.with_row_count(name="iLvl", offset=1)
     
     return statsDf
     
@@ -112,12 +116,14 @@ def main(args):
         return -1
     
     df = parse_curves(fp=args.stat_curves_fp, ilvl_cutoff=args.ilvl_cutoff)
-    df.to_csv(args.save_fp)
+    df = df.with_columns(pl.all().exclude("iLvl").cast(pl.Float64),
+                         pl.col("iLvl").cast(pl.UInt16))
+    df.write_ipc(args.save_fp)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Parse the stat curves .xml file and save as csv")
     parser.add_argument('--stat_curves_fp', '-f', type=str, help="File path to xml of stat curves (download from LotroCompanion)",required=True)
     parser.add_argument('--save_fp', '-s', type=str, help="Save path/name for csv (include .csv extension)", required=True)
-    parser.add_argument('--ilvl_cutoff', '-i', type=int, help="Value of the maximum ilvls to calculate", required=False, default=549) 
+    parser.add_argument('--ilvl_cutoff', '-i', type=int, help="Value of the maximum ilvls to calculate", required=False, default=599) 
     args = parser.parse_args()
     main(args)  
